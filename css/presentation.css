@@ -1,0 +1,40 @@
+.presentation {
+	overflow: hidden;
+	position: relative;
+}
+
+.slides-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.presentation-controls {
+	width: inherit;
+	height: inherit;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.presentation-controls-back,
+.presentation-controls-fwd {
+	width: 50px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	cursor: pointer;
+}
+
+.presentation-controls:hover .presentation-controls-back.enabled,
+.presentation-controls:hover .presentation-controls-fwd.enabled {
+	background-color: rgba(128,128,128,0.5);
+}
+
+.presentation-controls-back {
+	left: 0;
+}
+
+.presentation-controls-fwd {
+	right: 0;
+}

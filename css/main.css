@@ -1,0 +1,26 @@
+.oracle-presentation {
+	width: 600px;
+	height: 450px;
+	border: 1px #000 solid;
+	font-family: Tahoma;
+}
+
+.oracle-slide {
+	width: 600px;
+	height: 450px;
+}
+
+.oracle-slide h1 {
+	font-size: 25px;
+	margin: 0;
+	text-align: center;
+	line-height: 450px;
+}
+
+.oracle-slide h2 {
+	text-align: center;
+}
+
+.oracle-slide p {
+	padding: 0 30px;
+}

@@ -79,25 +79,21 @@ Presentation.prototype = {
 			.on("click", $.proxy(this.lastSlide, this));
 
 		this._controls_play = $("<div />")
-			.addClass("presentation-controls-play")
-			.text("play")
+			.addClass("presentation-controls-play presentation-controls-button")
 			.on("click", function () {
 				that.play();
 			});
 
 		this._controls_pause = $("<div />")
-			.addClass("presentation-controls-pause")
-			.text("pause")
+			.addClass("presentation-controls-pause presentation-controls-button")
 			.on("click", $.proxy(this.pause, this));
 
 		this._controls_stop = $("<div />")
-			.addClass("presentation-controls-stop")
-			.text("stop")
+			.addClass("presentation-controls-stop presentation-controls-button")
 			.on("click", $.proxy(this.stop, this));
 
 		this._controls_fullscreen = $("<div />")
-			.addClass("presentation-controls-fullscreen")
-			.text("F")
+			.addClass("presentation-controls-fullscreen presentation-controls-button")
 			.on("click", function() {
 				that.toggleFullscreen();
 			});
@@ -158,7 +154,6 @@ Presentation.prototype = {
 	_bindKeyboardEvents: function () {
 		var that = this;
 		$(document.body).keyup(function (evt) {
-			console.log(that._is_fullscreen, that._destination.get(0));
 			if (!that._is_fullscreen) {
 				return;
 			}
@@ -275,7 +270,6 @@ Presentation.prototype = {
 	_setFullscreenState: function (expandedOrNot) {
 		this._is_fullscreen = expandedOrNot;
 		this._destination.toggleClass("fullscreen", expandedOrNot);
-		console.log(this._is_fullscreen);
 	},
 	_bindFullscreenEvents: function () {
 		// We detect only exiting fullscreen mode
@@ -288,7 +282,6 @@ Presentation.prototype = {
 		for (var event_name in event_names) {
 			document.addEventListener(event_name, function (evt) {
 				if (!document[event_names[event_name]]) {
-					console.log("From event " + event_name);
 					that._setFullscreenState(false);
 				}
 			});

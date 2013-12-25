@@ -53,7 +53,9 @@ Presentation.prototype = {
 		this._interval = 1000;
 		this._is_fullscreen = false;
 
-		this._addControlElements();		
+		this._addControlElements();
+		this._bindKeyboardEvents();
+		this._bindFullscreenEvents();
 		this._checkAll();
 	},
 	_cache: function () {
@@ -153,6 +155,33 @@ Presentation.prototype = {
 		this._controls_slides_current.text(this._pointer + 1);
 		this._controls_slides_total.text(this._cached_slides.length);
 	},
+	_bindKeyboardEvents: function () {
+		var that = this;
+		$(document.body).keyup(function (evt) {
+			console.log(that._is_fullscreen, that._destination.get(0));
+			if (!that._is_fullscreen) {
+				return;
+			}
+
+			switch (evt.keyCode) {
+				case 37: // Left arrow
+					that.prevSlide();
+					break;
+				case 39: // Right arrow
+					that.nextSlide();
+					break;
+				case 70: // "F" letter
+					that.toggleFullscreen(false);
+					break;
+				case 13: // Enter
+					if (that._play_timer) {
+						that.pause();
+					} else {
+						that.play();
+					}
+			}
+		});
+	},
 	setSlide: function (index) {
 		if (!index) {
 			index = this._pointer;
@@ -243,6 +272,28 @@ Presentation.prototype = {
 		this._play_timer = 0;
 		this._checkPlayButtons();
 	},
+	_setFullscreenState: function (expandedOrNot) {
+		this._is_fullscreen = expandedOrNot;
+		this._destination.toggleClass("fullscreen", expandedOrNot);
+		console.log(this._is_fullscreen);
+	},
+	_bindFullscreenEvents: function () {
+		// We detect only exiting fullscreen mode
+		var event_names = {
+			"fullscreenchange": "fullscreen",
+			"mozfullscreenchange": "mozFullScreen",
+			"webkitfullscreenchange": "webkitIsFullScreen"
+		};
+		var that = this;
+		for (var event_name in event_names) {
+			document.addEventListener(event_name, function (evt) {
+				if (!document[event_names[event_name]]) {
+					console.log("From event " + event_name);
+					that._setFullscreenState(false);
+				}
+			});
+		}
+	},
 	toggleFullscreen: function (expandOrNot) {
 		if (typeof expandOrNot != "boolean") {
 			expandOrNot = !this._is_fullscreen;
@@ -264,8 +315,8 @@ Presentation.prototype = {
 				     element.mozCancelFullScreen ||
 				     element.msExitFullscreen;
 		}
+		this._setFullscreenState(expandOrNot);
 		method.apply(element);
-		this._is_fullscreen = expandOrNot;
 
 		// Browser calculates position incorrectly if to request fullscreen immediately
 		var that = this;

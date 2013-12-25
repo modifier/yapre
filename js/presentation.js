@@ -53,8 +53,8 @@ Presentation.prototype = {
 		this._interval = 1000;
 		this._is_fullscreen = false;
 
-		this._addControlElements();
-		this._checkArrows();
+		this._addControlElements();		
+		this._checkAll();
 	},
 	_cache: function () {
 		var that = this;
@@ -100,13 +100,26 @@ Presentation.prototype = {
 				that.toggleFullscreen();
 			});
 
+		this._controls_slides_total = $("<span />")
+			.addClass("presentation-controls-slides-total");
+
+		this._controls_slides_current = $("<span />")
+			.addClass("presentation-controls-slides-current");
+
+		this._controls_slide = $("<div />")
+			.addClass("presentation-controls-slide")
+			.append(this._controls_slides_current)
+			.append($("<span />").text(" / "))
+			.append(this._controls_slides_total)
+
 		control_panel
 			.append(this._controls_to_begin)
 			.append(this._controls_to_end)
 			.append(this._controls_play)
 			.append(this._controls_pause)
 			.append(this._controls_stop)
-			.append(this._controls_fullscreen);
+			.append(this._controls_fullscreen)
+			.append(this._controls_slide);
 
 		var control_wrapper = $("<div />").addClass("presentation-controls");
 
@@ -125,6 +138,11 @@ Presentation.prototype = {
 
 		this._destination.append(control_wrapper);
 	},
+	_checkAll: function() {
+		this._checkArrows();
+		this._checkPlayButtons();
+		this._checkSlides();
+	},
 	_checkArrows: function () {
 		this._controls_back.toggleClass("enabled", this._pointer > 0);
 		this._controls_fwd.toggleClass("enabled", this._pointer < this._cached_slides.length - 1)
@@ -134,6 +152,10 @@ Presentation.prototype = {
 		this._controls_play.toggle(!is_playing);
 		this._controls_pause.toggle(is_playing);
 		this._controls_stop.toggle(is_playing);
+	},
+	_checkSlides: function () {
+		this._controls_slides_current.text(this._pointer + 1);
+		this._controls_slides_total.text(this._cached_slides.length);
 	},
 	setSlide: function (index) {
 		if (!index) {
@@ -150,8 +172,8 @@ Presentation.prototype = {
 
 		this._wrapper.css("top", -position.top);
 		this._wrapper.css("left", -position.left);
-		this._checkArrows();
-		this._checkPlayButtons();
+
+		this._checkAll();
 	},
 	nextSlide: function () {
 		if (this._pointer < this._cached_slides.length - 1) {

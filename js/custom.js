@@ -5,4 +5,5 @@ $(document).ready(function () {
 	});
 
 	presentations[0].setSlide(1);
+	presentations[0].setPlayParams(null, true);
 });

@@ -14,6 +14,8 @@ Presentation.prototype = {
 
 	_pointer: 0,
 
+	_play_timer: 0,
+
 	_interval: 0,
 	_loop: false,
 
@@ -34,6 +36,7 @@ Presentation.prototype = {
 		// TODO: Check very small sizes
 
 		this._pointer = 0;
+		this._interval = 1000;
 
 		this._addControlElements();
 		this._checkArrows();
@@ -48,6 +51,8 @@ Presentation.prototype = {
 	_addControlElements: function () {
 		var control_panel = $("<div />").addClass("presentation-controls-lower");
 
+		var that = this;
+
 		this._controls_to_begin = $("<div />")
 			.addClass("presentation-controls-to-begin")
 			.on("click", $.proxy(this.firstSlide, this));
@@ -56,9 +61,29 @@ Presentation.prototype = {
 			.addClass("presentation-controls-to-end")
 			.on("click", $.proxy(this.lastSlide, this));
 
+		this._controls_play = $("<div />")
+			.addClass("presentation-controls-play")
+			.text("play")
+			.on("click", function () {
+				that.play();
+			});
+
+		this._controls_pause = $("<div />")
+			.addClass("presentation-controls-pause")
+			.text("pause")
+			.on("click", $.proxy(this.pause, this));
+
+		this._controls_stop = $("<div />")
+			.addClass("presentation-controls-stop")
+			.text("stop")
+			.on("click", $.proxy(this.stop, this));
+
 		control_panel
 			.append(this._controls_to_begin)
-			.append(this._controls_to_end);
+			.append(this._controls_to_end)
+			.append(this._controls_play)
+			.append(this._controls_pause)
+			.append(this._controls_stop);
 
 		var control_wrapper = $("<div />").addClass("presentation-controls");
 
@@ -81,6 +106,12 @@ Presentation.prototype = {
 		this._controls_back.toggleClass("enabled", this._pointer > 0);
 		this._controls_fwd.toggleClass("enabled", this._pointer < this._cachedSlides.length - 1)
 	},
+	_checkPlayButtons: function () {
+		var is_playing = Boolean(this._play_timer);
+		this._controls_play.toggle(!is_playing);
+		this._controls_pause.toggle(is_playing);
+		this._controls_stop.toggle(is_playing);
+	},
 	setSlide: function (index) {
 		if (!index) {
 			index = this._pointer;
@@ -97,6 +128,7 @@ Presentation.prototype = {
 		this._wrapper.css("top", -position.top);
 		this._wrapper.css("left", -position.left);
 		this._checkArrows();
+		this._checkPlayButtons();
 	},
 	nextSlide: function () {
 		if (this._pointer < this._cachedSlides.length - 1) {
@@ -118,26 +150,48 @@ Presentation.prototype = {
 		this._pointer = this._cachedSlides.length - 1;
 		this.setSlide();
 	},
+	_playNext: function() {
+		if (this._pointer >= this._cachedSlides.length - 1 && this._loop) {
+			this.firstSlide();
+		} else {
+			this.nextSlide();
+		}
+
+		if (this._pointer < this._cachedSlides.length - 1 || this._loop) {
+			this._setPlayTimer();
+		} else {
+			this.pause();
+		}
+	},
+	_setPlayTimer: function () {
+		this._play_timer = setTimeout($.proxy(this._playNext, this), this._interval);
+		this._checkPlayButtons();
+	},
 	play: function (interval, loop) {
 		this.setPlayParams(interval, loop);
 
-		// TODO: play
+		if (this._pointer >= this._cachedSlides.length - 1 && !this._loop) {
+			this.firstSlide();
+		}
+
+		this._setPlayTimer();
 	},
 	setPlayParams: function (interval, loop) {
-		this._interval = interval;
-		this._loop = loop;
-	},
-	disableStop: function () {
-		// TODO: disable stop button (only pause)
+		if (interval) {
+			this._interval = interval;
+		}
+		if (typeof loop == "boolean") {
+			this._loop = loop;
+		}
 	},
 	stop: function () {
-		this._interval = 0;
-		this._loop = false;
-
+		this.firstSlide();
 		this.pause();
 	},
 	pause: function () {
-
+		clearTimeout(this._play_timer);
+		this._play_timer = 0;
+		this._checkPlayButtons();
 	},
 	toggleFullscreen: function (expandOrNot) {
 		// TODO: fullscreen

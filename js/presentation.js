@@ -46,19 +46,34 @@ Presentation.prototype = {
 		});
 	},
 	_addControlElements: function () {
+		var control_panel = $("<div />").addClass("presentation-controls-lower");
+
+		this._controls_to_begin = $("<div />")
+			.addClass("presentation-controls-to-begin")
+			.on("click", $.proxy(this.firstSlide, this));
+
+		this._controls_to_end = $("<div />")
+			.addClass("presentation-controls-to-end")
+			.on("click", $.proxy(this.lastSlide, this));
+
+		control_panel
+			.append(this._controls_to_begin)
+			.append(this._controls_to_end);
+
 		var control_wrapper = $("<div />").addClass("presentation-controls");
 
 		this._controls_back = $("<div />")
 			.addClass("presentation-controls-back")
-			.on('click', $.proxy(this.prevSlide, this));
+			.on("click", $.proxy(this.prevSlide, this));
 
 		this._controls_fwd = $("<div />")
 			.addClass("presentation-controls-fwd")
-			.on('click', $.proxy(this.nextSlide, this));
+			.on("click", $.proxy(this.nextSlide, this));
 
 		control_wrapper
 			.append(this._controls_back)
-			.append(this._controls_fwd);
+			.append(this._controls_fwd)
+			.append(control_panel);
 
 		this._destination.append(control_wrapper);
 	},
@@ -93,6 +108,14 @@ Presentation.prototype = {
 		if (this._pointer > 0) {
 			this._pointer--;
 		}
+		this.setSlide();
+	},
+	firstSlide: function () {
+		this._pointer = 0;
+		this.setSlide();
+	},
+	lastSlide: function () {
+		this._pointer = this._cachedSlides.length - 1;
 		this.setSlide();
 	},
 	play: function (interval, loop) {

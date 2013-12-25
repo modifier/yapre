@@ -19,6 +19,8 @@ Presentation.prototype = {
 	_interval: 0,
 	_loop: false,
 
+	_is_fullscreen: false,
+
 	_controls_back: null,
 	_controls_fwd: null,
 
@@ -37,6 +39,7 @@ Presentation.prototype = {
 
 		this._pointer = 0;
 		this._interval = 1000;
+		this._is_fullscreen = false;
 
 		this._addControlElements();
 		this._checkArrows();
@@ -78,12 +81,20 @@ Presentation.prototype = {
 			.text("stop")
 			.on("click", $.proxy(this.stop, this));
 
+		this._controls_fullscreen = $("<div />")
+			.addClass("presentation-controls-fullscreen")
+			.text("F")
+			.on("click", function() {
+				that.toggleFullscreen();
+			});
+
 		control_panel
 			.append(this._controls_to_begin)
 			.append(this._controls_to_end)
 			.append(this._controls_play)
 			.append(this._controls_pause)
-			.append(this._controls_stop);
+			.append(this._controls_stop)
+			.append(this._controls_fullscreen);
 
 		var control_wrapper = $("<div />").addClass("presentation-controls");
 
@@ -183,6 +194,8 @@ Presentation.prototype = {
 		if (typeof loop == "boolean") {
 			this._loop = loop;
 		}
+
+		// TODO: play animation
 	},
 	stop: function () {
 		this.firstSlide();
@@ -194,6 +207,30 @@ Presentation.prototype = {
 		this._checkPlayButtons();
 	},
 	toggleFullscreen: function (expandOrNot) {
-		// TODO: fullscreen
+		if (typeof expandOrNot != "boolean") {
+			expandOrNot = !this._is_fullscreen;
+		} else if (expandOrNot == this._is_fullscreen) {
+			return;
+		}
+
+		var method, element = expandOrNot ? this._destination.get(0) : document;
+
+		if (expandOrNot) {
+			method = element.requestFullScreen ||
+					 element.webkitRequestFullscreen ||
+					 element.webkitRequestFullScreen ||
+					 element.mozRequestFullScreen ||
+					 element.msRequestFullScreen;
+		} else {
+			method = element.exitFullscreen ||
+				     element.webkitExitFullscreen ||
+				     element.mozCancelFullScreen ||
+				     element.msExitFullscreen;
+		}
+		method.apply(element);
+		this._is_fullscreen = expandOrNot;
+	},
+	toggleFullscreenButton: function (enableOrDisable) {
+		this._controls_fullscreen.toggle(enableOrDisable);
 	}
 };

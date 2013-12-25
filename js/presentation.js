@@ -4,10 +4,12 @@ var Presentation = function (destination) {
 };
 
 Presentation.prototype = {
+	// Why? Because I like all object variables to be listed in one place,
+	// it's convenient
 	_destination: null,
 	_wrapper: null,
 
-	_cachedSlides: [],
+	_cached_slides: [],
 
 	_width: 0,
 	_height: 0,
@@ -21,16 +23,26 @@ Presentation.prototype = {
 
 	_is_fullscreen: false,
 
+	_controls_to_begin: null,
+	_controls_to_end: null,
 	_controls_back: null,
 	_controls_fwd: null,
+	_controls_play: null,
+	_controls_pause: null,
+	_controls_stop: null,
+	_controls_fullscreen: null,
 
 	_init: function () {
 		this._cache();
-		if (!this._cachedSlides.length) {
+		if (!this._cached_slides.length) {
 			// TODO: No slides in presentation
 		}
 
 		this._wrapper = this._destination.find(".slides-wrapper");
+
+		if (!this._wrapper) {
+			// TODO: Add wrapper manually
+		}
 
 		this._width = this._destination.width();
 		this._height = this._destination.height();
@@ -46,9 +58,9 @@ Presentation.prototype = {
 	},
 	_cache: function () {
 		var that = this;
-		this._cachedSlides = [];
+		this._cached_slides = [];
 		this._destination.find(".slide").each(function () {
-			that._cachedSlides.push($(this));
+			that._cached_slides.push($(this));
 		});
 	},
 	_addControlElements: function () {
@@ -115,7 +127,7 @@ Presentation.prototype = {
 	},
 	_checkArrows: function () {
 		this._controls_back.toggleClass("enabled", this._pointer > 0);
-		this._controls_fwd.toggleClass("enabled", this._pointer < this._cachedSlides.length - 1)
+		this._controls_fwd.toggleClass("enabled", this._pointer < this._cached_slides.length - 1)
 	},
 	_checkPlayButtons: function () {
 		var is_playing = Boolean(this._play_timer);
@@ -128,13 +140,13 @@ Presentation.prototype = {
 			index = this._pointer;
 		}
 
-		if (index >= this._cachedSlides.length || index < 0) {
+		if (index >= this._cached_slides.length || index < 0) {
 			return;
 		}
 
 		this._pointer = index;
 
-		var position = this._cachedSlides[index].position();
+		var position = this._cached_slides[index].position();
 
 		this._wrapper.css("top", -position.top);
 		this._wrapper.css("left", -position.left);
@@ -142,7 +154,7 @@ Presentation.prototype = {
 		this._checkPlayButtons();
 	},
 	nextSlide: function () {
-		if (this._pointer < this._cachedSlides.length - 1) {
+		if (this._pointer < this._cached_slides.length - 1) {
 			this._pointer++;
 		}
 		this.setSlide();
@@ -158,17 +170,17 @@ Presentation.prototype = {
 		this.setSlide();
 	},
 	lastSlide: function () {
-		this._pointer = this._cachedSlides.length - 1;
+		this._pointer = this._cached_slides.length - 1;
 		this.setSlide();
 	},
 	_playNext: function() {
-		if (this._pointer >= this._cachedSlides.length - 1 && this._loop) {
+		if (this._pointer >= this._cached_slides.length - 1 && this._loop) {
 			this.firstSlide();
 		} else {
 			this.nextSlide();
 		}
 
-		if (this._pointer < this._cachedSlides.length - 1 || this._loop) {
+		if (this._pointer < this._cached_slides.length - 1 || this._loop) {
 			this._setPlayTimer();
 		} else {
 			this.pause();
@@ -181,7 +193,7 @@ Presentation.prototype = {
 	play: function (interval, loop) {
 		this.setPlayParams(interval, loop);
 
-		if (this._pointer >= this._cachedSlides.length - 1 && !this._loop) {
+		if (this._pointer >= this._cached_slides.length - 1 && !this._loop) {
 			this.firstSlide();
 		}
 

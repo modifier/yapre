@@ -1,4 +1,5 @@
 .oracle-presentation {
+	margin: 20px;
 	width: 600px;
 	height: 450px;
 	border: 1px #000 solid;
@@ -23,4 +24,45 @@
 
 .oracle-slide p {
 	padding: 0 30px;
+}
+
+.schemotechics-presentation {
+	margin: 20px;
+	width: 800px;
+	height: 600px;
+	border: 1px #000 solid;
+	font-family: Tahoma;
+}
+
+.schemotechics-slide {
+	width: 800px;
+	height: 600px;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.schemotechics-mop {
+	float: left;
+	height: 150px;
+	padding: 10px;
+}
+
+.schemotechics-mop2 {
+	float: right;
+	height: 240px;
+}
+
+.schemotechics-presentation:-webkit-full-screen,
+.schemotechics-presentation:-webkit-full-screen .slides-wrapper,
+.schemotechics-presentation:-webkit-full-screen .schemotechics-slide {
+	width: 100%;
+	height: 100%;
+}
+.schemotechics-presentation:-webkit-full-screen .schemotechics-slide {
+	font-size: 2em;
+}
+
+.schemotechics-presentation:-webkit-full-screen .schemotechics-mop,
+.schemotechics-presentation:-webkit-full-screen .schemotechics-mop2 {
+	height: auto;
 }

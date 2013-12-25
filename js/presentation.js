@@ -114,10 +114,10 @@ Presentation.prototype = {
 
 		control_panel
 			.append(this._controls_to_begin)
-			.append(this._controls_to_end)
 			.append(this._controls_play)
 			.append(this._controls_pause)
 			.append(this._controls_stop)
+			.append(this._controls_to_end)
 			.append(this._controls_fullscreen)
 			.append(this._controls_slide);
 
@@ -263,6 +263,12 @@ Presentation.prototype = {
 		}
 		method.apply(element);
 		this._is_fullscreen = expandOrNot;
+
+		// Browser calculates position incorrectly if to request fullscreen immediately
+		var that = this;
+		setTimeout(function() {
+			that.setSlide();
+		}, 50);
 	},
 	toggleFullscreenButton: function (enableOrDisable) {
 		this._controls_fullscreen.toggle(enableOrDisable);

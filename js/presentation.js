@@ -1,6 +1,8 @@
 var Presentation = function (destination) {
 	this._destination = $(destination);
-	this._init();
+	this._pointer = 0;
+	this._interval = 1000;
+	this._is_fullscreen = false;
 };
 
 Presentation.prototype = {
@@ -32,7 +34,7 @@ Presentation.prototype = {
 	_controls_stop: null,
 	_controls_fullscreen: null,
 
-	_init: function () {
+	init: function () {
 		this._cache();
 		if (!this._cached_slides.length) {
 			// TODO: No slides in presentation
@@ -48,10 +50,6 @@ Presentation.prototype = {
 		this._height = this._destination.height();
 
 		// TODO: Check very small sizes
-
-		this._pointer = 0;
-		this._interval = 1000;
-		this._is_fullscreen = false;
 
 		this._addControlElements();
 		this._bindKeyboardEvents();

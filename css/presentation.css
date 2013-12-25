@@ -25,17 +25,17 @@
 	top: 0;
 }
 
-.presentation-controls .presentation-controls-lower {
+.presentation .presentation-controls-lower {
 	display: none;
 }
 
-.presentation-controls:hover .presentation-controls-back.enabled,
-.presentation-controls:hover .presentation-controls-fwd.enabled {
+.presentation:hover .presentation-controls-back.enabled,
+.presentation:hover .presentation-controls-fwd.enabled {
 	background-color: rgba(128,128,128,0.5);
 	cursor: pointer;
 }
 
-.presentation-controls:hover .presentation-controls-lower {
+.presentation:hover .presentation-controls-lower {
 	display: block;
 }
 

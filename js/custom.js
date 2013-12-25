@@ -4,4 +4,7 @@ $(document).ready(function () {
 	oracle_presentation.setPlayParams(2000, true);
 
 	var schemotechics_presentation = new Presentation($(".schemotechics-presentation"));
+	$("#schemotechics-button").on("click", function () {
+		oracle_presentation.toggleFullscreen(true);
+	});
 });

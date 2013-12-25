@@ -121,8 +121,6 @@ Presentation.prototype = {
 			.append(this._controls_fullscreen)
 			.append(this._controls_slide);
 
-		var control_wrapper = $("<div />").addClass("presentation-controls");
-
 		this._controls_back = $("<div />")
 			.addClass("presentation-controls-back")
 			.on("click", $.proxy(this.prevSlide, this));
@@ -131,12 +129,10 @@ Presentation.prototype = {
 			.addClass("presentation-controls-fwd")
 			.on("click", $.proxy(this.nextSlide, this));
 
-		control_wrapper
+		this._destination
 			.append(this._controls_back)
 			.append(this._controls_fwd)
 			.append(control_panel);
-
-		this._destination.append(control_wrapper);
 	},
 	_checkAll: function() {
 		this._checkArrows();
@@ -211,6 +207,13 @@ Presentation.prototype = {
 	_setPlayTimer: function () {
 		this._play_timer = setTimeout($.proxy(this._playNext, this), this._interval);
 		this._checkPlayButtons();
+	},
+	togglePlayButton: function (enableOrDisable) {
+		if (!this._play_timer) {
+			this._controls_play.toggle(enableOrDisable);
+			return true;
+		}
+		return false;
 	},
 	play: function (interval, loop) {
 		this.setPlayParams(interval, loop);
